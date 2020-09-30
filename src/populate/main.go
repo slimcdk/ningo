@@ -1,9 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/slimcdk/nin-graph/pkg/domains/dnk"
+)
 
 func main() {
-	fmt.Printf("Populator!")
-	fmt.Printf(dnk.greet())
+	fmt.Printf("Populator!\n")
 
+	dnk.StartPopulationWorkers()
 }
