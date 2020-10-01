@@ -31,5 +31,7 @@ var MappingTable []MappingTableRow = []MappingTableRow{
 var dateWeights []int = []int{4, 3, 2, 7, 6, 5}
 var sequenceWeights []int = []int{4, 3, 2, 1}
 
-var startTime = time.Date(1858, 1, 1, 0, 0, 0, 0, time.UTC)
-var endTime = time.Date(2058, 1, 1, 0, 0, 0, 0, time.UTC)
+var startTime = time.Date(1858, 1, 1, 0, 0, 0, 0, time.UTC) // 1858-01-01
+var endTime = time.Date(2058, 1, 1, 0, 0, 0, 0, time.UTC)   // 2057-12-31
+
+var TotalTokens int = 344061000

@@ -1,0 +1,8 @@
+github.com/enriquebris/goconcurrentcounter v0.0.0-20200419230532-4756c242775c h1:7Hg4bPvUmwVJGATahICu0SPb2LyQk4SvlZMBgPD9vMQ=
+github.com/enriquebris/goconcurrentcounter v0.0.0-20200419230532-4756c242775c/go.mod h1:6JD9VP3tKnQxDyYlU8aw4V+4E+kM3vqPVite1uazIjc=
+github.com/enriquebris/goconcurrentqueue v0.6.0 h1:DJ97cgoPVoqlC4tTGBokn/omaB3o16yIs5QdAm6YEjc=
+github.com/enriquebris/goconcurrentqueue v0.6.0/go.mod h1:wGJhQNFI4wLNHleZLo5ehk1puj8M6OIl0tOjs3kwJus=
+github.com/enriquebris/goworkerpool v0.10.0 h1:ngOwkTlWv95pHsiBNMaQ8lcVGQl3AyQSh8eP3+Hdgps=
+github.com/enriquebris/goworkerpool v0.10.0/go.mod h1:gJB6cjFrZiUZFW0r+HpPD6o2xZAWPo54P1fp9vyMFvg=
+github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
+github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=

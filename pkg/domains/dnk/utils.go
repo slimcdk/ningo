@@ -41,3 +41,15 @@ func tokenSeries(sequence, sum int) int {
 	// token must belong to a male and be non zero
 	return (sequence%6-3)/2 + 2
 }
+
+func rowsForYear(year int) []MappingTableRow {
+
+	var rows []MappingTableRow
+
+	for _, row := range MappingTable {
+		if row.Year[0] <= year && year <= row.Year[1] {
+			rows = append(rows, row)
+		}
+	}
+	return rows
+}
