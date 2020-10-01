@@ -1,6 +1,9 @@
 package dnk
 
-import "math"
+import (
+	"math"
+	"time"
+)
 
 // IntIntoBins transforms an integer into chuncks such that the total sum is equal the number
 func intIntoBins(number int, nBins uint) []int {
@@ -42,14 +45,30 @@ func tokenSeries(sequence, sum int) int {
 	return (sequence%6-3)/2 + 2
 }
 
-func rowsForYear(year int) []MappingTableRow {
+func rowsForYear(year int) []mappingTableRow {
 
-	var rows []MappingTableRow
+	var rows []mappingTableRow
 
-	for _, row := range MappingTable {
+	for _, row := range mappingTable {
 		if row.Year[0] <= year && year <= row.Year[1] {
 			rows = append(rows, row)
 		}
 	}
 	return rows
 }
+
+
+func TotalTokensAvailable() uint {
+	var total uint
+
+	for _, row := range mappingTable {
+		start := time.Date(row.Year[0], 1, 1, 0, 0, 0, 0, time.UTC)
+		end := time.Date(row.Year[1]+1, 1, 1, 0, 0, 0, 0, time.UTC) 
+		days := uint(math.Abs(float64(end.Sub(start).Hours() / 24)))
+
+		total += days * uint(row.SequenceRange[1]-row.SequenceRange[0]+1)
+	}
+
+	return total
+}
+

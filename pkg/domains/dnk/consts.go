@@ -1,16 +1,16 @@
 package dnk
 
-import "time"
+import (
+	"time"
+	"github.com/pariz/gountries"
+)
 
-// MappingTableRow contains sequence and gender data for a year
-type MappingTableRow struct {
-	Year          []int
-	SequenceRange []int
-	Sex           []string
-}
+// ISO3301 standard for Denmark
+var iso3301, _ = gountries.New().FindCountryByName("DNK")
 
-// MappingTable First year HAS to be first and last year HAS to be last
-var MappingTable []MappingTableRow = []MappingTableRow{
+
+// mappingTable Contains data about sequence ranges for specific years. (Sequence encodes decade)
+var mappingTable []mappingTableRow = []mappingTableRow{
 	{Year: []int{1858, 1899}, SequenceRange: []int{5000, 5999}, Sex: []string{"female", "male"}},
 	{Year: []int{1858, 1899}, SequenceRange: []int{6000, 6999}, Sex: []string{"female", "male"}},
 	{Year: []int{1858, 1899}, SequenceRange: []int{7000, 7999}, Sex: []string{"female", "male"}},
@@ -28,10 +28,14 @@ var MappingTable []MappingTableRow = []MappingTableRow{
 	{Year: []int{2000, 2057}, SequenceRange: []int{8000, 8999}, Sex: []string{"female", "male"}},
 }
 
-var dateWeights []int = []int{4, 3, 2, 7, 6, 5}
-var sequenceWeights []int = []int{4, 3, 2, 1}
-
+// Start and end for dates
 var startTime = time.Date(1858, 1, 1, 0, 0, 0, 0, time.UTC) // 1858-01-01
 var endTime = time.Date(2058, 1, 1, 0, 0, 0, 0, time.UTC)   // 2057-12-31
 
-var TotalTokens int = 344061000
+
+// Weights for the token components
+var dateWeights []int = []int{4, 3, 2, 7, 6, 5}
+var sequenceWeights []int = []int{4, 3, 2, 1}
+
+// Total number of tokens available
+var TotalTokens uint = TotalTokensAvailable() // 344061000

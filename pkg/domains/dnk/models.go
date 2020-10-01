@@ -26,3 +26,10 @@ type workerData struct {
 	Date time.Time
 	Db   *sql.DB
 }
+
+// mappingTableRow contains sequence and gender data for a year
+type mappingTableRow struct {
+	Year          []int
+	SequenceRange []int
+	Sex           []string
+}

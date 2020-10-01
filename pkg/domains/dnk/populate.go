@@ -11,6 +11,9 @@ import (
 
 // SpawnPopulationWorkers sd
 func SpawnPopulationWorkers(db *sql.DB) {
+
+	log.Printf("Total number of tokens: %d", TotalTokensAvailable())
+
 	start := time.Now()
 	log.Printf("Spawning DNK workers..\r")
 

@@ -6,3 +6,8 @@ github.com/enriquebris/goworkerpool v0.10.0 h1:ngOwkTlWv95pHsiBNMaQ8lcVGQl3AyQSh
 github.com/enriquebris/goworkerpool v0.10.0/go.mod h1:gJB6cjFrZiUZFW0r+HpPD6o2xZAWPo54P1fp9vyMFvg=
 github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
+github.com/pariz/gountries v0.0.0-20200430155801-1c6a393df9c7 h1:GneNkGCnFPoBkaOd03qsvXSV+ZRkZedaN0DNJCruuI0=
+github.com/pariz/gountries v0.0.0-20200430155801-1c6a393df9c7/go.mod h1:U0ETmPPEsfd7CpUKNMYi68xIOL8Ww4jPZlaqNngcwqs=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.3.0 h1:clyUAQHOM3G0M3f5vQj7LuJrETvjVot3Z5el9nffUtU=
+gopkg.in/yaml.v2 v2.3.0/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
