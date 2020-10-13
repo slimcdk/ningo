@@ -2,25 +2,24 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"time"
 
-	dbDriver "github.com/slimcdk/nin-graph/pkg/database"
-	"github.com/slimcdk/nin-graph/pkg/domains/dnk"
+	storage "github.com/slimcdk/rainbow-nin/pkg/domains/database"
+	"github.com/slimcdk/rainbow-nin/pkg/domains/dnk"
 )
 
 func main() {
 	fmt.Printf("Go token populator!\n")
 
-	db, err := dbDriver.Init()
+	db, err := storage.Init()
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 
-	// Connect and check the server version
-	var version string
-	db.QueryRow("SELECT VERSION()").Scan(&version)
-	fmt.Println("Connected to database:", version)
-
-	dnk.SpawnPopulationWorkers(db)
+	start := time.Now()
+	log.Printf("Populating %d tokens for nation %s..", dnk.TotalTokens, dnk.ISO3301.Alpha3)
+	dnk.SpawnPopulationWorkers()
+	log.Printf("Done after %s after %s", dnk.ISO3301.Alpha3, time.Since(start))
 
 }

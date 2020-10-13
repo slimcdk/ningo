@@ -6,7 +6,7 @@ import (
 )
 
 // IntIntoBins transforms an integer into chuncks such that the total sum is equal the number
-func intIntoBins(number int, nBins uint) []int {
+func intIntoChunks(number int, nBins uint) []int {
 
 	var n int = int(number / int(nBins))
 	var bins []int = make([]int, int(nBins))
@@ -57,13 +57,13 @@ func rowsForYear(year int) []mappingTableRow {
 	return rows
 }
 
-
+// TotalTokensAvailable returns the total number of tokens for DNK
 func TotalTokensAvailable() uint {
 	var total uint
 
 	for _, row := range mappingTable {
 		start := time.Date(row.Year[0], 1, 1, 0, 0, 0, 0, time.UTC)
-		end := time.Date(row.Year[1]+1, 1, 1, 0, 0, 0, 0, time.UTC) 
+		end := time.Date(row.Year[1]+1, 1, 1, 0, 0, 0, 0, time.UTC)
 		days := uint(math.Abs(float64(end.Sub(start).Hours() / 24)))
 
 		total += days * uint(row.SequenceRange[1]-row.SequenceRange[0]+1)
@@ -71,4 +71,3 @@ func TotalTokensAvailable() uint {
 
 	return total
 }
-

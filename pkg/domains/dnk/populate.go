@@ -1,21 +1,17 @@
 package dnk
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
-	"time"
 
 	"github.com/enriquebris/goworkerpool"
 )
 
+func PopulateDatabase() {
+
+}
+
 // SpawnPopulationWorkers sd
-func SpawnPopulationWorkers(db *sql.DB) {
-
-	log.Printf("Total number of tokens: %d", TotalTokensAvailable())
-
-	start := time.Now()
-	log.Printf("Spawning DNK workers..\r")
+func SpawnPopulationWorkers() {
 
 	// Count the number of total days from startTime to endTime
 	var maxOperationsInQueue uint = uint(endTime.Sub(startTime).Hours() / 24)
@@ -39,7 +35,7 @@ func SpawnPopulationWorkers(db *sql.DB) {
 	for i := 0; i < int(maxOperationsInQueue); i++ {
 		pool.AddTask(workerData{
 			Date: startTime.AddDate(0, 0, i),
-			Db:   db,
+			Db:   nil,
 		})
 	}
 
@@ -48,27 +44,21 @@ func SpawnPopulationWorkers(db *sql.DB) {
 
 	// Wait while at least one worker is alive
 	pool.Wait()
-	log.Printf("Spawning DNK workers.. Done after %s\r\n", time.Since(start))
 }
 
 func singleDayPopulationWorker(data interface{}) bool {
 	// Check if we have the data we need
 	wData, ok := data.(workerData)
 	if !ok {
-		fmt.Printf("No data\n")
 		return false
 	}
 
 	currentDate := wData.Date
 
 	// Generate the tokens
-	_, err := GenerateTokensForDay(currentDate)
+	_, err := generateTokensForDay(currentDate)
 	if err != nil {
-		log.Println("Error occured", err)
 		return false
 	}
-
-	//log.Printf("Got data %s. Generated %d tokens!\n", currentDate, len(tokens))
-
 	return true
 }

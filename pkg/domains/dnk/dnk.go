@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// GenerateTokensForDay -> Computes tokens for a specific date
-func GenerateTokensForDay(currentDate time.Time) ([]Token, error) {
+// generateTokensForDay -> Computes tokens for a specific date
+func generateTokensForDay(currentDate time.Time) ([]Token, error) {
 
 	var tokens []Token
 

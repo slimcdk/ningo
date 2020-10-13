@@ -3,17 +3,21 @@ package dnk
 import (
 	"database/sql"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // Token stores the data for a single token
 type Token struct {
-	Token string
+	gorm.Model
+	Token string `gorm:"primaryKey"`
 	//	Nation     string
 	Attributes Attributes
 }
 
 // Attributes are special attributes for this token
 type Attributes struct {
+	gorm.Model
 	Date         time.Time
 	Sequence     string
 	ControlDigit string
