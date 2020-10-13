@@ -1,7 +1,6 @@
 package dnk
 
 import (
-	"database/sql"
 	"time"
 
 	"gorm.io/gorm"
@@ -9,26 +8,25 @@ import (
 
 // Token stores the data for a single token
 type Token struct {
-	gorm.Model
-	Token string `gorm:"primaryKey"`
+	Token string `gorm:"primaryKey;type:char(11)"`
 	//	Nation     string
-	Attributes Attributes
+	Attributes Attributes `gorm:"embedded"`
+	CreatedAt  time.Time  `gorm:"autoCreateTime"`
 }
 
 // Attributes are special attributes for this token
 type Attributes struct {
-	gorm.Model
-	Date         time.Time
-	Sequence     string
-	ControlDigit string
-	TokenSeries  string
-	Sex          string
-	Sum          int
+	Date         time.Time `gorm:"not null;type:date"`
+	Sequence     string    `gorm:"not null;type:char(3)"`
+	ControlDigit string    `gorm:"not null;type:char(1)"`
+	TokenSeries  string    `gorm:"not null;type:varchar(255)"`
+	Sex          string    `gorm:"not null;type:varchar(255)"`
+	Sum          int       `gorm:"not null;type:smallint"`
 }
 
 type workerData struct {
 	Date time.Time
-	Db   *sql.DB
+	Db   *gorm.DB
 }
 
 // mappingTableRow contains sequence and gender data for a year
@@ -36,4 +34,9 @@ type mappingTableRow struct {
 	Year          []int
 	SequenceRange []int
 	Sex           []string
+}
+
+// TableName overrides the table name used by User to `profiles`
+func (Token) TableName() string {
+	return "dnk"
 }

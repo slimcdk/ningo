@@ -4,14 +4,11 @@ import (
 	"fmt"
 
 	"github.com/enriquebris/goworkerpool"
+	"gorm.io/gorm"
 )
 
-func PopulateDatabase() {
-
-}
-
 // SpawnPopulationWorkers sd
-func SpawnPopulationWorkers() {
+func SpawnPopulationWorkers(storage *gorm.DB) {
 
 	// Count the number of total days from startTime to endTime
 	var maxOperationsInQueue uint = uint(endTime.Sub(startTime).Hours() / 24)
@@ -31,11 +28,16 @@ func SpawnPopulationWorkers() {
 
 	pool.SetWorkerFunc(singleDayPopulationWorker)
 
+	// Prepare database for writing from workers
+	sqlDB, err := storage.DB()
+	sqlDB.SetMaxOpenConns(int(maxOperationsInQueue))
+	storage.AutoMigrate(&Token{})
+
 	// Enqueue jobs
 	for i := 0; i < int(maxOperationsInQueue); i++ {
 		pool.AddTask(workerData{
 			Date: startTime.AddDate(0, 0, i),
-			Db:   nil,
+			Db:   storage,
 		})
 	}
 
@@ -54,11 +56,15 @@ func singleDayPopulationWorker(data interface{}) bool {
 	}
 
 	currentDate := wData.Date
+	storage := wData.Db
 
 	// Generate the tokens
-	_, err := generateTokensForDay(currentDate)
+	tokens, err := generateTokensForDay(currentDate)
 	if err != nil {
 		return false
 	}
+
+	storage.Create(&tokens)
+
 	return true
 }

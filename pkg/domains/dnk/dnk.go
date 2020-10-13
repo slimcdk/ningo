@@ -45,6 +45,7 @@ func generateTokensForDay(currentDate time.Time) ([]Token, error) {
 			// Create token entity
 			tokenData := Token{
 				Token: fmt.Sprintf("%02d%02d%02d-%04d", currentDay, currentMonth, currentYear%100, seq),
+				//Nation: ISO3301
 				Attributes: Attributes{
 					Date:         currentDate,
 					Sequence:     fmt.Sprintf("%03d", seq),
