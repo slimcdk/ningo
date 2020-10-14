@@ -13,9 +13,10 @@ services:
       - MYSQL_DATABASE=rainbow_nin
       - MYSQL_USER=nin
       - MYSQL_PASSWORD=rainbow
+      - MAX_
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - storage:/config:rw
+      - ./data:/config:rw
     ports:
       - 13306:3306
     restart: unless-stopped

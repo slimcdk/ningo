@@ -37,7 +37,7 @@ var (
 	sequenceWeights []int = []int{4, 3, 2, 1}
 
 	// ISO3301 standard for Denmark
-	ISO3301, _ = gountries.New().FindCountryByName("dnk")
+	ISO3301, _ = gountries.New().FindCountryByAlpha("dnk")
 
 	// TotalTokens holds the total number of tokens available
 	TotalTokens uint = TotalTokensAvailable() // 344061000

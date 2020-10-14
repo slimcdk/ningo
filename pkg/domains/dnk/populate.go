@@ -2,61 +2,81 @@ package dnk
 
 import (
 	"fmt"
+	"log"
+	"time"
 
 	"github.com/enriquebris/goworkerpool"
+	db "github.com/slimcdk/rainbow-nin/pkg/storage"
 	"gorm.io/gorm"
 )
 
 // SpawnPopulationWorkers sd
-func SpawnPopulationWorkers(storage *gorm.DB) {
+func SpawnPopulationWorkers(storage *gorm.DB, resumePrevious bool) error {
 
-	// Count the number of total days from startTime to endTime
-	var maxOperationsInQueue uint = uint(endTime.Sub(startTime).Hours() / 24)
-
-	pool, err := goworkerpool.NewPoolWithOptions(goworkerpool.PoolOptions{
-		TotalInitialWorkers:          uint(maxOperationsInQueue / 10),
-		MaxWorkers:                   uint(maxOperationsInQueue),
-		MaxOperationsInQueue:         maxOperationsInQueue,
-		WaitUntilInitialWorkersAreUp: false,
-		LogVerbose:                   false,
-	})
-
+	// Prepare database table
+	err := storage.AutoMigrate(&Token{})
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
-	pool.SetWorkerFunc(singleDayPopulationWorker)
+	// Count the number of total days from startTime to endTime
+	totalNumberOfDays := uint(endTime.Sub(startTime).Hours() / 24)
+	maximumConcurrentProcesses := uint(db.MaxConns)
 
-	// Prepare database for writing from workers
-	sqlDB, err := storage.DB()
-	sqlDB.SetMaxOpenConns(int(maxOperationsInQueue))
-	storage.AutoMigrate(&Token{})
+	// Setup worker pool
+	pool, err := goworkerpool.NewPoolWithOptions(goworkerpool.PoolOptions{
+		TotalInitialWorkers:          maximumConcurrentProcesses,
+		MaxWorkers:                   maximumConcurrentProcesses,
+		MaxOperationsInQueue:         totalNumberOfDays,
+		WaitUntilInitialWorkersAreUp: false,
+	})
+	if err != nil {
+		return err
+	}
+
+	// Continue from previous progress if told to
+	startTime := continueProgress(storage, resumePrevious)
 
 	// Enqueue jobs
-	for i := 0; i < int(maxOperationsInQueue); i++ {
-		pool.AddTask(workerData{
+	pool.SetWorkerFunc(singleDayPopulationWorker)
+	for i := 0; i < int(totalNumberOfDays); i++ {
+		pool.AddTask(bagpack{
 			Date: startTime.AddDate(0, 0, i),
 			Db:   storage,
 		})
 	}
 
 	// Kill all workers after the currently enqueued jobs get processed
-	pool.LateKillAllWorkers()
+	err = pool.LateKillAllWorkers()
+	if err != nil {
+		return err
+	}
 
 	// Wait while at least one worker is alive
-	pool.Wait()
+	err = pool.Wait()
+	if err != nil {
+		return err
+	}
+
+	// Verify that data store contain all tokens (or at least same amount)
+	err = verifyStorage(storage)
+	if err != nil {
+		return err
+	}
+
+	// Everything went well
+	return nil
 }
 
 func singleDayPopulationWorker(data interface{}) bool {
 	// Check if we have the data we need
-	wData, ok := data.(workerData)
+	bp, ok := data.(bagpack)
 	if !ok {
 		return false
 	}
 
-	currentDate := wData.Date
-	storage := wData.Db
+	currentDate := bp.Date
+	storage := bp.Db
 
 	// Generate the tokens
 	tokens, err := generateTokensForDay(currentDate)
@@ -64,7 +84,44 @@ func singleDayPopulationWorker(data interface{}) bool {
 		return false
 	}
 
-	storage.Create(&tokens)
+	// Insert tokens into database
+	result := storage.Create(&tokens)
+	if result.Error != nil {
+		log.Printf("Got error for date %s: %a \n", currentDate.Format("01-02-2006"), result.Error)
+		return false
+	}
+	log.Printf("%s: Generated %d tokens and wrote %d \n", currentDate.Format("01-02-2006"), len(tokens), result.RowsAffected)
 
+	// Tell worker manager that we are done
 	return true
+}
+
+// Returns the queried progress or starts from the very beginning
+func continueProgress(storage *gorm.DB, resumePrevious bool) time.Time {
+
+	if !resumePrevious {
+		return startTime
+	}
+
+	var result time.Time
+	storage.Model(&Token{}).Select("MAX(date)").Find(&result)
+
+	if result.After(startTime) {
+		return result
+	}
+
+	return continueProgress(storage, false)
+}
+
+func verifyStorage(storage *gorm.DB) error {
+
+	log.Print("Verifying storage.. ")
+
+	var count int64
+	storage.Model(&Token{}).Count(&count)
+
+	if uint(count) != TotalTokens {
+		return fmt.Errorf("Data is incomplete. Infact %d tokens are missing", TotalTokens-uint(count))
+	}
+	return nil
 }
