@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/enriquebris/goworkerpool"
-	db "github.com/slimcdk/rainbow-nin/pkg/storage"
+	db "github.com/slimcdk/ningo/pkg/storage"
 	"gorm.io/gorm"
 )
 

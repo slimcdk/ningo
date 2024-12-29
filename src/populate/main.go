@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/slimcdk/rainbow-nin/pkg/domains/dnk"
-	"github.com/slimcdk/rainbow-nin/pkg/storage"
+	"github.com/slimcdk/ningo/pkg/domains/dnk"
+	"github.com/slimcdk/ningo/pkg/storage"
 )
 
 func main() {
